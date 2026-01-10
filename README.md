@@ -7,13 +7,20 @@
 - ✅ Python API创建光学场景
 - ✅ 支持主要光学元件（光源、镜子、透镜、棱镜等）
 - ✅ 一键转换JSON为HTML查看器和PNG截图
-- ✅ **自动裁剪顶部** - 截图时裁剪75px，去除工具栏
 - ✅ **光源轨迹动画生成** - 模拟移动光源
 - ✅ **外部文件支持** - 从JSON文件加载场景和轨迹
 
 ## 快速开始
 
-### 方式1：使用外部JSON文件（推荐新手）
+先在仓库内运行
+
+```bash
+git clone https://github.com/ricktu288/ray-optics.git
+```
+
+然后按照其文档本地搭建仿真器
+
+### 方式1：使用外部JSON文件
 
 ```bash
 # 1. 生成轨迹文件
@@ -95,23 +102,23 @@ python json_to_image.py
 
 ## 支持的光学元件
 
-| 类 | 描述 | 示例 |
-|---|---|---|
-| **PointSource** | 点光源 | `PointSource(Point(100, 300), wavelength=650)` |
-| **ParallelLight** | 平行光束 | `ParallelLight(Point(100, 300), direction=Point(1, 0))` |
-| **FlatMirror** | 平面镜 | `FlatMirror(Point(300, 200), Point(400, 400))` |
-| **CurvedMirror** | 抛物面镜 | `CurvedMirror(p1, p2, p3)` |
-| **IdealLens** | 理想透镜 | `IdealLens(p1, p2, focal_length=100)` |
-| **GlassRefractor** | 玻璃/棱镜 | `GlassRefractor([Point(...), ...], refractive_index=1.5)` |
-| **Blocker** | 遮挡物/屏幕 | `Blocker(Point(800, 0), Point(800, 600))` |
+| 类                 | 描述        | 示例                                                      |
+| ------------------ | ----------- | --------------------------------------------------------- |
+| **PointSource**    | 点光源      | `PointSource(Point(100, 300), wavelength=650)`            |
+| **ParallelLight**  | 平行光束    | `ParallelLight(Point(100, 300), direction=Point(1, 0))`   |
+| **FlatMirror**     | 平面镜      | `FlatMirror(Point(300, 200), Point(400, 400))`            |
+| **CurvedMirror**   | 抛物面镜    | `CurvedMirror(p1, p2, p3)`                                |
+| **IdealLens**      | 理想透镜    | `IdealLens(p1, p2, focal_length=100)`                     |
+| **GlassRefractor** | 玻璃/棱镜   | `GlassRefractor([Point(...), ...], refractive_index=1.5)` |
+| **Blocker**        | 遮挡物/屏幕 | `Blocker(Point(800, 0), Point(800, 600))`                 |
 
 ## 项目结构
 
 ```
 ├── ray_optics_controller.py   # 核心库（含轨迹生成函数）
 ├── json_to_image.py            # JSON→HTML+图片转换工具
-├── generate_trajectory.py      # 外部文件轨迹生成工具 ⭐新
-├── create_trajectory.py        # 轨迹文件生成辅助工具 ⭐新
+├── generate_trajectory.py      # 外部文件轨迹生成工具
+├── create_trajectory.py        # 轨迹文件生成辅助工具
 ├── screenshot_helper.py        # HTML生成和截图
 ├── compress_json.js            # JSON压缩（Node.js）
 ├── example_usage.py            # 高级示例（6个场景）
@@ -147,17 +154,20 @@ python json_to_image.py
 ## 依赖
 
 ### 基础功能（生成JSON）
+
 - Python 3.6+
 - 无需额外依赖
 
 ### HTML和截图（json_to_image.py）
+
 - **Node.js**: `npm install json-url @babel/runtime`
 - **Python依赖**:
   - Selenium: `pip install selenium` 或 `conda install selenium`
-  - Pillow: `pip install pillow` 或 `conda install pillow` ⭐必需（用于图片裁剪）
+  - Pillow: `pip install pillow` 或 `conda install pillow`
 - **Chrome浏览器**
 
 **注意**：如果使用conda环境，请确保在激活的环境中安装所有Python依赖：
+
 ```bash
 conda activate your_env
 conda install pillow selenium
@@ -166,12 +176,15 @@ conda install pillow selenium
 ## API文档
 
 ### Point(x, y)
+
 坐标点
 
 ### RayOpticsScene(name, width=1200, height=600)
+
 场景容器
 
 **方法：**
+
 - `add_object(obj)` - 添加单个对象
 - `add_objects([obj1, obj2, ...])` - 批量添加
 - `to_json(indent=2)` - 生成JSON字符串
@@ -247,6 +260,7 @@ generate_light_trajectory(
 **第1步：创建场景JSON**（在ray-optics网页上设计并导出，或使用Python生成）
 
 **第2步：创建轨迹JSON**
+
 ```bash
 # 使用辅助工具生成轨迹文件
 python create_trajectory.py -t line -o my_traj.json \
@@ -257,12 +271,14 @@ python create_trajectory.py -t line -o my_traj.json \
 ```
 
 **第3步：生成轨迹序列**
+
 ```bash
 python generate_trajectory.py scene.json my_traj.json \
     -o my_animation -w 650 -b 0.9
 ```
 
 **第4步：转换为图片**
+
 ```bash
 python json_to_image.py
 ```
@@ -310,21 +326,26 @@ A: 检查：1）亮度是否太低，2）波长是否在可见光范围（380-75
 
 **Q: 截图中有顶部工具栏，如何去除？**
 A: 默认已自动裁剪顶部75px。如需调整：
-  - 编辑 `json_to_image.py`，修改 `SCREENSHOT_CROP_TOP = 80`（数值越大裁剪越多）
-  - 或直接调用 `screenshot_with_selenium(..., crop_top=80)`
+
+- 编辑 `json_to_image.py`，修改 `SCREENSHOT_CROP_TOP = 80`（数值越大裁剪越多）
+- 或直接调用 `screenshot_with_selenium(..., crop_top=80)`
 
 ## 技术细节
 
 ### JSON格式
+
 生成符合ray-optics v5格式的JSON文件。所有对象类型名称使用正确的驼峰命名：
+
 - `PointSource`（不是"laser"）
 - `Beam`（不是"parallel"）
 - `Mirror`, `ParabolicMirror`, `IdealLens`, `Glass`, `Blocker`
 
 ### HTML场景加载
+
 使用Node.js的 `json-url('lzma')` 库压缩场景数据，生成正确的URL hash格式（以`XQAAAA`开头），与ray-optics完全兼容。
 
 ### 目录结构
+
 - `output/json/` - JSON场景文件（可手动加载）
 - `output/html/` - HTML查看器（自动加载场景）
 - `output/images/` - PNG截图（1920x1080）
@@ -334,7 +355,3 @@ A: 默认已自动裁剪顶部75px。如需调整：
 
 - Ray-Optics仿真器：https://github.com/ricktu288/ray-optics
 - 在线演示：https://phydemo.app/ray-optics/simulator/
-
-## 许可证
-
-MIT
