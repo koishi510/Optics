@@ -1,0 +1,7 @@
+# Ray-Optics Controller 依赖
+
+# 可选：用于自动截图
+selenium>=4.0.0
+
+# 如果需要使用Chrome浏览器，还需要安装：
+# webdriver-manager>=3.8.0

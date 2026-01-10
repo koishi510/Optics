@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ray Optics - Ray Optics Scene</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: #000;
+            color: white;
+            overflow: hidden;
+        }
+        #info {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            padding: 10px 15px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 5px;
+            z-index: 1000;
+            font-size: 12px;
+        }
+        #loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        iframe {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="info">
+        <strong>Ray Optics Scene</strong><br>
+        1200x600 | 3 objects
+    </div>
+
+    <div id="loading">
+        <div class="spinner"></div>
+        <div>Loading simulator...</div>
+    </div>
+
+    <iframe id="simulator"></iframe>
+
+    <script>
+        const compressedScene = 'XQAAAAL9AAAAAAAAAABEKcrGU8hqLFnpmU9EnTFrVldP-XiP9Y4HrwOM8x5EPftyVMU9fYPIffsrhjemVq-RRYqPc7OKeUMboBeUSBJHe7j2dGqdkIcNfKVQW1JI8oY2KOcBehKItJSB9MtBzyF91F3Nrfv_qXBYLd_bAKgpIZoSj0ZnDUkwE80TrT2EvJvgETEYlo6RafM9WIG3otRU5mqaTsx3cI6W4qJvGPfe_KMvsDINaC-fM8xEzGP3cUlJEPT9RT8czYFsnGvj4rNJbOkLpp-YgIiglO6aa5__vIvOAA';
+        const simulatorURL = 'https://phydemo.app/ray-optics/simulator/#' + compressedScene;
+
+        const iframe = document.getElementById('simulator');
+        const loading = document.getElementById('loading');
+
+        console.log('Compressed scene length:', compressedScene.length);
+        console.log('Loading URL:', simulatorURL);
+
+        iframe.src = simulatorURL;
+
+        iframe.onload = function() {
+            setTimeout(function() {
+                loading.style.display = 'none';
+                console.log('✓ Scene loaded');
+            }, 3000);
+        };
+    </script>
+</body>
+</html>
